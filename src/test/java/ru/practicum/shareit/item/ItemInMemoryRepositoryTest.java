@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.practicum.shareit.item.model.Item;
 
+import java.util.Set;
+
 @SpringBootTest
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class ItemInMemoryRepositoryTest {
@@ -17,7 +19,8 @@ public class ItemInMemoryRepositoryTest {
 
     @BeforeEach
     public void afterEach() {
-        itemRepository.getItems().ifPresent(items -> items.forEach(item -> itemRepository.deleteItem(item.getId())));
+        Set<Item> items = itemRepository.getItems();
+        items.forEach(item -> itemRepository.deleteItem(item.getId()));
         itemRepository.setItemId(0);
     }
 
@@ -64,8 +67,8 @@ public class ItemInMemoryRepositoryTest {
         item.setDescription("description");
         item.setAvailable(true);
         itemRepository.addItem(item);
-        Assertions.assertTrue(itemRepository.getItems().get().contains(item));
+        Assertions.assertTrue(itemRepository.getItems().contains(item));
         itemRepository.deleteItem(1);
-        Assertions.assertFalse(itemRepository.getItems().get().contains(item));
+        Assertions.assertFalse(itemRepository.getItems().contains(item));
     }
 }

@@ -62,8 +62,8 @@ public class InMemoryUserRepository implements UserRepository {
     }
 
     @Override
-    public Optional<Set<User>> getUsers() {
-        return Optional.of(new HashSet<>(users.values()));
+    public Set<User> getUsers() {
+        return new HashSet<>(users.values());
     }
 
     @Override

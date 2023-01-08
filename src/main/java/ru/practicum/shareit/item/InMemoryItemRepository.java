@@ -54,8 +54,8 @@ public class InMemoryItemRepository implements ItemRepository {
     }
 
     @Override
-    public Optional<Set<Item>> getItems() {
-        return Optional.of(new HashSet<>(items.values()));
+    public Set<Item> getItems() {
+        return new HashSet<>(items.values());
     }
 
     @Override

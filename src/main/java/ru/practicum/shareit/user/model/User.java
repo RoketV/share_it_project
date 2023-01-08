@@ -8,6 +8,13 @@ import javax.validation.constraints.NotBlank;
 @Data
 public class User {
 
+    private long id;
+    @NotBlank
+    private String name;
+    @Email
+    @NotBlank
+    private String email;
+
     public User() {
     }
 
@@ -16,11 +23,4 @@ public class User {
         this.name = name;
         this.email = email;
     }
-
-    private long id;
-    @NotBlank
-    private String name;
-    @Email
-    @NotBlank
-    private String email;
 }

@@ -13,7 +13,7 @@ public interface ItemRepository {
 
     Optional<Item> getItem(long id);
 
-    Optional<Set<Item>> getItems();
+    Set<Item> getItems();
 
     Optional<Item> deleteItem(long id);
 }

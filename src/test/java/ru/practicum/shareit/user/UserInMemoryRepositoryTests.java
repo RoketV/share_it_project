@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.practicum.shareit.user.model.User;
 
+import java.util.Set;
+
 @SpringBootTest
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class UserInMemoryRepositoryTests {
@@ -17,7 +19,8 @@ public class UserInMemoryRepositoryTests {
 
     @BeforeEach
     public void beforeEach() {
-        userRepository.getUsers().ifPresent(users -> users.forEach(user -> userRepository.deleteUser(user.getId())));
+        Set<User> users = userRepository.getUsers();
+        users.forEach(user -> userRepository.deleteUser(user.getId()));
         userRepository.setUserId(0);
     }
 
@@ -61,8 +64,8 @@ public class UserInMemoryRepositoryTests {
         Assertions.assertAll(
                 () -> Assertions.assertEquals(user, userRepository.getUser(1).get()),
                 () -> Assertions.assertEquals(secondUser, userRepository.getUser(2).get()),
-                () -> Assertions.assertTrue(userRepository.getUsers().get().contains(user)));
+                () -> Assertions.assertTrue(userRepository.getUsers().contains(user)));
         userRepository.deleteUser(1);
-        Assertions.assertFalse(userRepository.getUsers().get().contains(user));
+        Assertions.assertFalse(userRepository.getUsers().contains(user));
     }
 }

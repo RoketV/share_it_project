@@ -34,7 +34,6 @@ public class UserService {
 
     public Set<UserDto> getUsers() {
         return userRepository.getUsers()
-                .orElseThrow(() -> new EntityNotFoundException("there are no users yet"))
                 .stream()
                 .map(UserMapper.USER_MAPPER::toDto)
                 .collect(Collectors.toSet());

@@ -13,7 +13,7 @@ public interface UserRepository {
 
     Optional<User> getUser(long id);
 
-    Optional<Set<User>> getUsers();
+    Set<User> getUsers();
 
     Optional<User> deleteUser(long id);
 

@@ -53,7 +53,6 @@ public class ItemService {
 
     public Set<ItemDto> getItems(long userId) {
         return itemRepository.getItems()
-                .orElseThrow(() -> new EntityNotFoundException("items not found"))
                 .stream()
                 .filter(item -> item.getUser().getId() == userId)
                 .map(ItemMapper.ITEM_MAPPER::toDto)
@@ -70,7 +69,6 @@ public class ItemService {
             return Collections.emptySet();
         }
         return Optional.of(itemRepository.getItems()
-                        .orElseThrow(() -> new EntityNotFoundException("items not found while searching"))
                         .stream()
                         .filter(item -> item.getAvailable() &&
                                 (item.getName().toLowerCase().contains(text.toLowerCase())
@@ -82,7 +80,6 @@ public class ItemService {
 
     private boolean userDoesExist(long userId) {
         return userRepository.getUsers()
-                .orElseThrow(() -> new EntityNotFoundException("users are empty"))
                 .stream()
                 .map(User::getId)
                 .anyMatch(id -> id == userId);
