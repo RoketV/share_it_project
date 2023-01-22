@@ -1,11 +1,11 @@
 package ru.practicum.shareit.booking;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.dto.BookingMapper;
 import ru.practicum.shareit.booking.dto.BookingRequestDto;
 import ru.practicum.shareit.booking.dto.BookingResponseDto;
-import ru.practicum.shareit.booking.enums.State;
 import ru.practicum.shareit.booking.enums.Status;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.exceptions.*;
@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class BookingService {
 
@@ -39,7 +40,7 @@ public class BookingService {
                         "User with id %d not found", userId)));
         if (item.getUser() == user) {
             throw new EntityNotFoundException(String.format("item with id %d already belongs " +
-                    "to user with id %d",item.getId(), userId));
+                    "to user with id %d", item.getId(), userId));
         }
         if (!item.getAvailable()) {
             throw new BookingConsistencyException(String.format("item with id %d is not available for booking",
@@ -52,6 +53,7 @@ public class BookingService {
         booking.setItem(item);
         booking.setUser(user);
         booking.setStatus(Status.WAITING);
+        log.info("booking for item with id {} created by user with id {}", item.getId(), userId);
         return BookingMapper.BOOKING_MAPPER.toDto(bookingRepository.save(booking));
     }
 
@@ -71,9 +73,11 @@ public class BookingService {
         }
         if (approved) {
             booking.setStatus(Status.APPROVED);
+            log.info("booking with id {} approved", bookingId);
         }
         if (!approved) {
             booking.setStatus(Status.REJECTED);
+            log.info("booking with id {} rejected", bookingId);
         }
         bookingRepository.updateBookingStatus(booking.getStatus(), bookingId);
         return BookingMapper.BOOKING_MAPPER.toDto(booking);
@@ -100,6 +104,12 @@ public class BookingService {
                         .collect(Collectors.toList());
             case "FUTURE":
                 return bookingRepository.findFutureBookingsByBooker(LocalDateTime.now(), bookerId)
+                        .stream()
+                        .map(BookingMapper.BOOKING_MAPPER::toDto)
+                        .sorted(Comparator.comparing(BookingResponseDto::getStart).reversed())
+                        .collect(Collectors.toList());
+            case "PAST":
+                return bookingRepository.findPastBookingsByBooker(LocalDateTime.now(), bookerId)
                         .stream()
                         .map(BookingMapper.BOOKING_MAPPER::toDto)
                         .sorted(Comparator.comparing(BookingResponseDto::getStart).reversed())
@@ -141,6 +151,12 @@ public class BookingService {
                         .collect(Collectors.toList());
             case "FUTURE":
                 return bookingRepository.findFutureBookingsByOwner(LocalDateTime.now(), ownerId)
+                        .stream()
+                        .map(BookingMapper.BOOKING_MAPPER::toDto)
+                        .sorted(Comparator.comparing(BookingResponseDto::getStart).reversed())
+                        .collect(Collectors.toList());
+            case "PAST":
+                return bookingRepository.findPastBookingsByOwner(LocalDateTime.now(), ownerId)
                         .stream()
                         .map(BookingMapper.BOOKING_MAPPER::toDto)
                         .sorted(Comparator.comparing(BookingResponseDto::getStart).reversed())

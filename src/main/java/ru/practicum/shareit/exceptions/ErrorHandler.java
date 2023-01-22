@@ -52,4 +52,10 @@ public class ErrorHandler {
     public Map<String, String> unsupportedStateHandler(UnsupportedStateException e) {
         return Collections.singletonMap("error", String.format("Unknown state: %s", e.getMessage()));
     }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Map<String, String> commentConsistencyException(CommentConsistencyException e) {
+        return Collections.singletonMap("error", e.getMessage());
+    }
 }

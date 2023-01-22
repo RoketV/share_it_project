@@ -3,13 +3,14 @@ package ru.practicum.shareit.item;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.comments.dto.CommentRequestDto;
+import ru.practicum.shareit.comments.dto.CommentResponseDto;
 import ru.practicum.shareit.item.dto.ItemRequestDto;
 import ru.practicum.shareit.item.dto.ItemResponseDto;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.List;
-import java.util.Set;
 
 /**
  * TODO Sprint add-controllers.
@@ -23,24 +24,25 @@ public class ItemController {
 
     @PostMapping
     public ResponseEntity<ItemResponseDto> addItem(@Valid @RequestBody ItemRequestDto dto,
-                                                  @RequestHeader("X-Sharer-User-Id") @Valid @NotNull Long userId) {
+                                                   @RequestHeader("X-Sharer-User-Id") @NotNull Long userId) {
         return ResponseEntity.ok(itemService.addItem(dto, userId));
     }
 
     @PatchMapping("/{itemId}")
     public ResponseEntity<ItemResponseDto> updateItem(@RequestBody ItemRequestDto dto,
-                                                     @RequestHeader("X-Sharer-User-Id") @Valid @NotNull Long userId,
-                                                     @PathVariable long itemId) {
+                                                      @RequestHeader("X-Sharer-User-Id") @NotNull Long userId,
+                                                      @PathVariable Long itemId) {
         return ResponseEntity.ok(itemService.updateItem(dto, userId, itemId));
     }
 
     @GetMapping("/{itemId}")
-    public ResponseEntity<ItemResponseDto> getItem(@PathVariable Long itemId) {
-        return ResponseEntity.ok(itemService.getItem(itemId));
+    public ResponseEntity<ItemResponseDto> getItem(@RequestHeader("X-Sharer-User-Id") @NotNull Long ownerId,
+                                                   @PathVariable Long itemId) {
+        return ResponseEntity.ok(itemService.getItem(ownerId, itemId));
     }
 
     @GetMapping
-    public ResponseEntity<Set<ItemResponseDto>> getItems(@RequestHeader("X-Sharer-User-Id") @Valid @NotNull long userId) {
+    public ResponseEntity<List<ItemResponseDto>> getItems(@RequestHeader("X-Sharer-User-Id") @NotNull Long userId) {
         return ResponseEntity.ok(itemService.getItems(userId));
     }
 
@@ -50,7 +52,14 @@ public class ItemController {
     }
 
     @DeleteMapping("/{itemId}")
-    public ResponseEntity<ItemResponseDto> deleteItem(@PathVariable long itemId) {
+    public ResponseEntity<ItemResponseDto> deleteItem(@PathVariable Long itemId) {
         return ResponseEntity.ok(itemService.deleteItem(itemId));
+    }
+
+    @PostMapping("/{itemId}/comment")
+    public ResponseEntity<CommentResponseDto> postComment(@Valid @RequestBody CommentRequestDto dto,
+                                                          @PathVariable Long itemId,
+                                                          @RequestHeader("X-Sharer-User-Id") @NotNull Long userId) {
+        return ResponseEntity.ok(itemService.addComment(dto, itemId, userId));
     }
 }

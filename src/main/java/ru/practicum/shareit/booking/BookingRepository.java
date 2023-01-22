@@ -18,11 +18,19 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     List<Booking> findAllByItem_Id(Long itemId);
 
+    List<Booking> findAllByItem_User_Id(Long ownerId);
+
     @Query("select b from Booking b where b.item.user.id = ?1")
     List<Booking> findAllByOwner(Long ownerId);
 
-    @Query("select b from Booking b where (b.start > ?1 and b.end > ?1) and b.user.id = ?2")
+    @Query("select b from Booking b where b.start > ?1 and b.user.id = ?2")
     List<Booking> findFutureBookingsByBooker(LocalDateTime now, Long bookerId);
+
+    @Query("select b from Booking b where b.end < ?1 and b.user.id = ?2")
+    List<Booking> findPastBookingsByBooker(LocalDateTime now, Long bookerId);
+
+    @Query("select b from Booking b where b.end < ?1 and b.user.id = ?2 and b.item.id = ?3")
+    List<Booking> findPastBookingsByBookerAndItem(LocalDateTime now, Long bookerId, Long itemId);
 
     @Query("select b from Booking b where (b.start < ?1 and b.end > ?1) and b.user.id = ?2")
     List<Booking> findCurrentBookingsByBooker(LocalDateTime now, Long bookerId);
@@ -30,8 +38,11 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     @Query("select b from Booking b where b.status = ?1 and b.user.id = ?2")
     List<Booking> findByStatusByBooker(Status status, Long bookerId);
 
-    @Query("select b from Booking b where (b.start > ?1 and b.end > ?1) and b.item.user.id = ?2")
+    @Query("select b from Booking b where b.start > ?1 and b.item.user.id = ?2")
     List<Booking> findFutureBookingsByOwner(LocalDateTime now, Long bookerId);
+
+    @Query("select b from Booking b where b.end < ?1 and b.item.user.id = ?2")
+    List<Booking> findPastBookingsByOwner(LocalDateTime now, Long bookerId);
 
     @Query("select b from Booking b where (b.start < ?1 and b.end > ?1) and b.item.user.id = ?2")
     List<Booking> findCurrentBookingsByOwner(LocalDateTime now, Long bookerId);

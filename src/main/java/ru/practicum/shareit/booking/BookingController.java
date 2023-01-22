@@ -1,13 +1,10 @@
 package ru.practicum.shareit.booking;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingRequestDto;
 import ru.practicum.shareit.booking.dto.BookingResponseDto;
-import ru.practicum.shareit.booking.enums.State;
-import ru.practicum.shareit.exceptions.UnsupportedStateException;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -46,11 +43,7 @@ public class BookingController {
     public ResponseEntity<List<BookingResponseDto>> getBookingsByBooker(@RequestHeader("X-Sharer-User-Id") @NotNull Long bookerId,
                                                                         @RequestParam(required = false,
                                                                                 defaultValue = "ALL") String state) {
-        try {
             return ResponseEntity.ok(bookingService.getBookingsByBooker(bookerId, state));
-        } catch (IllegalArgumentException e) {
-            throw new UnsupportedStateException(state.toString());
-        }
     }
     @GetMapping("/owner")
     public ResponseEntity<List<BookingResponseDto>> getBookingsByOwner(@RequestHeader("X-Sharer-User-Id") @NotNull Long ownerId,
