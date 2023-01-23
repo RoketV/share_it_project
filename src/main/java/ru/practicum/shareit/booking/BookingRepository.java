@@ -3,6 +3,7 @@ package ru.practicum.shareit.booking;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.booking.enums.Status;
 import ru.practicum.shareit.booking.model.Booking;
 
@@ -10,6 +11,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+@Repository
 public interface BookingRepository extends JpaRepository<Booking, Long> {
     @Query("select b from Booking b where b.id = ?1 and (b.item.user.id = ?2 or b.user.id = ?2)")
     Optional<Booking> findByIdAndItem_User_IdOrUser_Id(Long bookingId, Long userId);

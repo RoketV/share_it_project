@@ -1,5 +1,8 @@
 package ru.practicum.shareit.comments;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
@@ -9,6 +12,9 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
+@Getter
+@Setter
+@ToString
 @Table(name = "comments")
 public class Comment {
     @Id
@@ -25,46 +31,6 @@ public class Comment {
     private Item item;
     @Column(name = "created")
     private LocalDateTime created;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
-    }
-
-    public User getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(User author) {
-        this.author = author;
-    }
-
-    public Item getItem() {
-        return item;
-    }
-
-    public void setItem(Item item) {
-        this.item = item;
-    }
-
-    public LocalDateTime getCreated() {
-        return created;
-    }
-
-    public void setCreated(LocalDateTime created) {
-        this.created = created;
-    }
 
     @Override
     public boolean equals(Object o) {

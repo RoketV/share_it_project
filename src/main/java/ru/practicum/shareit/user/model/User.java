@@ -1,11 +1,18 @@
 package ru.practicum.shareit.user.model;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import java.util.Objects;
 
 @Entity
+@Getter
+@Setter
+@ToString
 @Table(name = "users")
 public class User {
 
@@ -29,30 +36,6 @@ public class User {
         this.email = email;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -64,14 +47,5 @@ public class User {
     @Override
     public int hashCode() {
         return Objects.hash(getId(), getName(), getEmail());
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", email='" + email + '\'' +
-                '}';
     }
 }

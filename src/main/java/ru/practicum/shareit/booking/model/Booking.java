@@ -1,7 +1,10 @@
 package ru.practicum.shareit.booking.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.Hibernate;
 import ru.practicum.shareit.booking.enums.Status;
 import ru.practicum.shareit.item.model.Item;
@@ -15,6 +18,9 @@ import java.util.Objects;
  * TODO Sprint add-bookings.
  */
 @Entity
+@Getter
+@Setter
+@ToString
 @RequiredArgsConstructor
 @Table(name = "bookings")
 public class Booking {
@@ -36,66 +42,6 @@ public class Booking {
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private Status status;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public LocalDateTime getStart() {
-        return start;
-    }
-
-    public void setStart(LocalDateTime start) {
-        this.start = start;
-    }
-
-    public LocalDateTime getEnd() {
-        return end;
-    }
-
-    public void setEnd(LocalDateTime end) {
-        this.end = end;
-    }
-
-    public Item getItem() {
-        return item;
-    }
-
-    public void setItem(Item item) {
-        this.item = item;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public Status getStatus() {
-        return status;
-    }
-
-    public void setStatus(Status status) {
-        this.status = status;
-    }
-
-    @Override
-    public String toString() {
-        return "Booking{" +
-                "id=" + id +
-                ", start=" + start +
-                ", end=" + end +
-                ", item=" + item +
-                ", user=" + user +
-                ", status=" + status +
-                '}';
-    }
 
     @Override
     public boolean equals(Object o) {
