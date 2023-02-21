@@ -3,6 +3,7 @@ package ru.practicum.shareit.item.model;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import ru.practicum.shareit.request.ItemRequest;
 import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
@@ -35,6 +36,9 @@ public class Item {
     @ManyToOne
     @JoinColumn(name = "owner_id")
     private User user;
+    @ManyToOne
+    @JoinColumn(name = "request_id")
+    private ItemRequest request;
 
     @Override
     public boolean equals(Object o) {
