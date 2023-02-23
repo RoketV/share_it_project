@@ -11,7 +11,7 @@ import java.util.List;
 
 @Repository
 public interface ItemRepository extends JpaRepository<Item, Long> {
-    Page<Item> findAllByUser_Id(Long ownerId, Pageable pageable);
+    Page<Item> findAllByUser_IdOrderByIdDesc(Long ownerId, Pageable pageable);
     @Query("SELECT i FROM Item i WHERE i.request IS NOT NULL")
     List<Item> findItemsWithRequest();
     @Query("SELECT i FROM Item i WHERE i.request.id = ?1")

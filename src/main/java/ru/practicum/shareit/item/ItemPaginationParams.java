@@ -10,10 +10,10 @@ import javax.validation.constraints.Min;
 public class ItemPaginationParams {
 
     @Min(0)
-    private final Integer from;
+    private Integer from;
     @Min(1)
     @Max(20)
-    private final Integer size;
+    private Integer size;
 
     public ItemPaginationParams(@RequestParam(value = "from", defaultValue = "0")
                                 Integer from,
@@ -27,5 +27,8 @@ public class ItemPaginationParams {
         }
         this.from = from;
         this.size = size;
+    }
+
+    public ItemPaginationParams() {
     }
 }

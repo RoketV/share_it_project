@@ -115,11 +115,10 @@ public class ItemService {
     }
 
     public List<ItemOutputDto> getItems(Long ownerId, ItemPaginationParams params) {
-        Page<Item> page = itemRepository.findAllByUser_Id(ownerId, PageRequest.of(params.getFrom(), params.getSize()));
+        Page<Item> page = itemRepository.findAllByUser_IdOrderByIdDesc(ownerId, PageRequest.of(params.getFrom(), params.getSize()));
         List<ItemOutputDto> items = page.getContent()
                 .stream()
                 .map(ItemMapper.ITEM_MAPPER::toDto)
-                .sorted(Comparator.comparing(ItemOutputDto::getId))
                 .collect(Collectors.toList());
         List<BookingInItemResponseDto> bookings = bookingRepository.findAllByItem_User_Id(ownerId)
                 .stream()
@@ -157,14 +156,17 @@ public class ItemService {
             return Collections.emptyList();
         }
         Page<Item> page = itemRepository.findAll(PageRequest.of(params.getFrom(), params.getSize()));
-        return Optional.of(page.getContent()
-                        .stream()
-                        .filter(item -> item.getAvailable() &&
-                                (item.getName().toLowerCase().contains(text.toLowerCase())
-                                        || item.getDescription().toLowerCase().contains(text.toLowerCase())))
-                        .map(ItemMapper.ITEM_MAPPER::toDto)
-                        .collect(Collectors.toList()))
-                .orElseThrow(() -> new EntityNotFoundException("there is no item which satisfies your search"));
+        List<ItemOutputDto> items = page.getContent()
+                .stream()
+                .filter(item -> item.getAvailable() &&
+                        (item.getName().toLowerCase().contains(text.toLowerCase())
+                                || item.getDescription().toLowerCase().contains(text.toLowerCase())))
+                .map(ItemMapper.ITEM_MAPPER::toDto)
+                .collect(Collectors.toList());
+        if (items.isEmpty()) {
+            throw new EntityNotFoundException("there is no item which satisfies your search");
+        }
+        return items;
     }
 
     public CommentOutputDto addComment(CommentInputDto dto, Long itemId, Long userId) {

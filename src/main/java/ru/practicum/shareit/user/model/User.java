@@ -36,6 +36,10 @@ public class User {
         this.email = email;
     }
 
+    public User(Long id) {
+        this.id = id;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
