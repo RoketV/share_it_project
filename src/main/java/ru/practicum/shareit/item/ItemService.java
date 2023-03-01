@@ -115,7 +115,7 @@ public class ItemService {
     }
 
     public List<ItemOutputDto> getItems(Long ownerId, ItemPaginationParams params) {
-        Page<Item> page = itemRepository.findAllByUser_IdOrderByIdDesc(ownerId, PageRequest.of(params.getFrom(), params.getSize()));
+        Page<Item> page = itemRepository.findAllByUser_IdOrderByIdAsc(ownerId, PageRequest.of(params.getFrom(), params.getSize()));
         List<ItemOutputDto> items = page.getContent()
                 .stream()
                 .map(ItemMapper.ITEM_MAPPER::toDto)

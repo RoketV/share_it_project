@@ -41,41 +41,23 @@ class ItemRepositoryTests {
     @BeforeEach
     public void setUp() {
         Long ownerId = 1L;
-        user = new User();
-        user.setId(ownerId);
-        user.setName("User 1");
-        user.setEmail("user1@example.com");
+        user = new User(ownerId,"User 1", "user1@example.com");
 
         userRepository.save(user);
 
-        request = new ItemRequest();
-        request.setCreated(LocalDateTime.now());
-        request.setUser(user);
-        request.setDescription("Request Description");
-        request.setId(1L);
+        request = new ItemRequest(1L, "Request Description",LocalDateTime.now(), user);
 
         requestRepository.save(request);
 
-        item1 = new Item();
-        item1.setName("Item 1");
-        item1.setDescription("Description 1");
-        item1.setAvailable(true);
-        item1.setUser(user);
-        item1.setRequest(request);
-
-        item2 = new Item();
-        item2.setName("Item 2");
-        item2.setDescription("Description 2");
-        item2.setAvailable(false);
-        item2.setUser(user);
-        item2.setRequest(request);
+        item1 = new Item("Item 1", "Description 1", true, user, request);
+        item2 = new Item("Item 2", "Description 2", false, user, request);
 
         itemRepository.saveAll(List.of(item1, item2));
     }
 
     @Test
     void testFindAllByUser_IdOrderByIdDesc() {
-        Page<Item> itemsPage = itemRepository.findAllByUser_IdOrderByIdDesc(user.getId(), PageRequest.of(0, 10));
+        Page<Item> itemsPage = itemRepository.findAllByUser_IdOrderByIdAsc(user.getId(), PageRequest.of(0, 10));
 
         Assertions.assertAll(
                 () -> assertEquals(2, itemsPage.getContent().size()),

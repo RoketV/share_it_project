@@ -13,4 +13,14 @@ public class ItemRequestOutputDto {
     private String description;
     private LocalDateTime created;
     private List<ItemOutputDto> items;
+
+    public ItemRequestOutputDto(Long id, String description, LocalDateTime created, List<ItemOutputDto> items) {
+        this.id = id;
+        this.description = description;
+        this.created = created;
+        this.items = items;
+    }
+
+    public ItemRequestOutputDto() {
+    }
 }

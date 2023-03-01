@@ -8,6 +8,7 @@ import ru.practicum.shareit.user.model.User;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 /**
  * TODO Sprint add-item-requests.
@@ -29,4 +30,27 @@ public class ItemRequest {
     @ManyToOne
     @JoinColumn(name = "owner_id")
     private User user;
+
+    public ItemRequest(Long id, String description, LocalDateTime created, User user) {
+        this.id = id;
+        this.description = description;
+        this.created = created;
+        this.user = user;
+    }
+
+    public ItemRequest() {
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ItemRequest)) return false;
+        ItemRequest request = (ItemRequest) o;
+        return Objects.equals(getId(), request.getId()) && Objects.equals(getDescription(), request.getDescription()) && Objects.equals(getCreated(), request.getCreated()) && Objects.equals(getUser(), request.getUser());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getDescription(), getCreated(), getUser());
+    }
 }

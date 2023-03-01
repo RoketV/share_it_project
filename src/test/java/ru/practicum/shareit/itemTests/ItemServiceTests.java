@@ -98,7 +98,7 @@ public class ItemServiceTests {
     void searchItem_WhenTextIsBlank_ShouldReturnEmptyList() {
         when(itemRepository.findAll(any(PageRequest.class))).thenReturn(new PageImpl<>(Collections.emptyList()));
 
-        List<ItemOutputDto> result = itemService.searchItem("", new ItemPaginationParams());
+        List<ItemOutputDto> result = itemService.searchItem("", new ItemPaginationParams(1,20));
 
         assertEquals(0, result.size());
     }
@@ -232,7 +232,7 @@ public class ItemServiceTests {
 
         List<Item> items = Arrays.asList(new Item(), new Item());
         Page<Item> itemsPage = new PageImpl<>(items);
-        when(itemRepository.findAllByUser_IdOrderByIdDesc(any(), eq(PageRequest.of(params.getFrom(), params.getSize()))))
+        when(itemRepository.findAllByUser_IdOrderByIdAsc(any(), eq(PageRequest.of(params.getFrom(), params.getSize()))))
                 .thenReturn(itemsPage);
 
         List<ItemOutputDto> getItems = itemService.getItems(1L, params);

@@ -40,7 +40,40 @@ public class Item {
     @JoinColumn(name = "request_id")
     private ItemRequest request;
 
+    public Item() {
+    }
 
+    public Item(String name, String description, Boolean available, User user) {
+        this.name = name;
+        this.description = description;
+        this.available = available;
+        this.user = user;
+    }
+
+    public Item(Long id, String name, String description, Boolean available, User user, ItemRequest request) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.available = available;
+        this.user = user;
+        this.request = request;
+    }
+
+    public Item(String name, String description, Boolean available, User user, ItemRequest request) {
+        this.name = name;
+        this.description = description;
+        this.available = available;
+        this.user = user;
+        this.request = request;
+    }
+
+    public Item(Long id, String name, String description, Boolean available, User user) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.available = available;
+        this.user = user;
+    }
 
     @Override
     public boolean equals(Object o) {

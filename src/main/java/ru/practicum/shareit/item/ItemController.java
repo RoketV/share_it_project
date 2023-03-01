@@ -43,13 +43,13 @@ public class ItemController {
 
     @GetMapping
     public ResponseEntity<List<ItemOutputDto>> getItems(@RequestHeader("X-Sharer-User-Id") @NotNull Long userId,
-                                                        ItemPaginationParams params) {
+                                                        @Valid ItemPaginationParams params) {
         return ResponseEntity.ok(itemService.getItems(userId, params));
     }
 
     @GetMapping("/search")
     public ResponseEntity<List<ItemOutputDto>> searchItem(@RequestParam(required = false) String text,
-                                                          ItemPaginationParams params) {
+                                                          @Valid ItemPaginationParams params) {
         return ResponseEntity.ok(itemService.searchItem(text, params));
     }
 
