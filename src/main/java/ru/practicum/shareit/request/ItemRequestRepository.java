@@ -12,6 +12,7 @@ import java.util.List;
 public interface ItemRequestRepository extends JpaRepository<ItemRequest, Long> {
 
     List<ItemRequest> findAllByUser_Id(Long userId);
+
     @Query("SELECT ir FROM ItemRequest ir WHERE ir.user.id <> ?1 ORDER BY ir.created DESC")
     Page<ItemRequest> findAllExceptUser(Long userId, Pageable pageable);
 }

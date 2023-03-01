@@ -29,7 +29,7 @@ public class CommentRepositoryTests {
     private UserRepository userRepository;
 
     @Test
-    public void findAllByItem_IdTest(){
+    public void findAllByItem_IdTest() {
         User user = new User("userName", "email@email.com");
 
         userRepository.save(user);
@@ -46,7 +46,6 @@ public class CommentRepositoryTests {
         commentRepository.saveAll(List.of(comment1, comment2, comment3));
 
         List<Comment> comments = commentRepository.findAllByItem_Id(1L);
-
 
         Assertions.assertAll(
                 () -> assertFalse(comments.isEmpty()),

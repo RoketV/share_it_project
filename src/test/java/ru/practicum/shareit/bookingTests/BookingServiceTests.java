@@ -484,6 +484,7 @@ public class BookingServiceTests {
         verify(userRepository).findById(bookerId);
         verify(bookingRepository).findFutureBookingsByOwner(bookerId, PageRequest.of(params.getFrom(), params.getSize()));
     }
+
     @Test
     public void getBookingsByOwner_withValidParamsAndPastState_returnsExpectedBookings() {
         Long bookerId = 1L;
