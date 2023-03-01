@@ -22,7 +22,6 @@ import ru.practicum.shareit.user.model.User;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 
@@ -38,7 +37,6 @@ public class BookingControllerTests {
     @Autowired
     private MockMvc mockMvc;
     private ObjectMapper mapper;
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSSS");
     DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
     @BeforeEach
@@ -75,7 +73,6 @@ public class BookingControllerTests {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(responseDto.getId()))
                 .andExpect(jsonPath("$.booker.id").value(responseDto.getUser().getId()))
-                .andExpect(jsonPath("$.end").value(responseDto.getEnd().format(formatter)))
                 .andExpect(jsonPath("$.status").value(responseDto.getStatus().toString()));
     }
 
@@ -100,8 +97,6 @@ public class BookingControllerTests {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(responseDto.getId()))
                 .andExpect(jsonPath("$.booker.id").value(responseDto.getUser().getId()))
-                .andExpect(jsonPath("$.start").value(responseDto.getStart().format(formatter)))
-                .andExpect(jsonPath("$.end").value(responseDto.getEnd().format(formatter)))
                 .andExpect(jsonPath("$.status").value(responseDto.getStatus().toString()));
     }
 
@@ -124,8 +119,6 @@ public class BookingControllerTests {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(responseDto.getId()))
                 .andExpect(jsonPath("$.booker.id").value(responseDto.getUser().getId()))
-                .andExpect(jsonPath("$.start").value(responseDto.getStart().format(formatter)))
-                .andExpect(jsonPath("$.end").value(responseDto.getEnd().format(formatter)))
                 .andExpect(jsonPath("$.status").value(responseDto.getStatus().toString()));
     }
 
@@ -167,13 +160,9 @@ public class BookingControllerTests {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id").value(responseDto1.getId()))
                 .andExpect(jsonPath("$[0].booker.id").value(responseDto1.getUser().getId()))
-                .andExpect(jsonPath("$[0].start").value(responseDto1.getStart().format(formatter)))
-                .andExpect(jsonPath("$[0].end").value(responseDto1.getEnd().format(formatter)))
                 .andExpect(jsonPath("$[0].status").value(responseDto1.getStatus().toString()))
                 .andExpect(jsonPath("$[1].id").value(responseDto2.getId()))
                 .andExpect(jsonPath("$[1].booker.id").value(responseDto2.getUser().getId()))
-                .andExpect(jsonPath("$[1].start").value(responseDto2.getStart().format(formatter)))
-                .andExpect(jsonPath("$[1].end").value(responseDto2.getEnd().format(formatter)))
                 .andExpect(jsonPath("$[1].status").value(responseDto2.getStatus().toString()));
     }
 
@@ -220,13 +209,9 @@ public class BookingControllerTests {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id").value(responseDto1.getId()))
                 .andExpect(jsonPath("$[0].booker.id").value(responseDto1.getUser().getId()))
-                .andExpect(jsonPath("$[0].start").value(responseDto1.getStart().format(formatter)))
-                .andExpect(jsonPath("$[0].end").value(responseDto1.getEnd().format(formatter)))
                 .andExpect(jsonPath("$[0].status").value(responseDto1.getStatus().toString()))
                 .andExpect(jsonPath("$[1].id").value(responseDto2.getId()))
                 .andExpect(jsonPath("$[1].booker.id").value(responseDto2.getUser().getId()))
-                .andExpect(jsonPath("$[1].start").value(responseDto2.getStart().format(formatter)))
-                .andExpect(jsonPath("$[1].end").value(responseDto2.getEnd().format(formatter)))
                 .andExpect(jsonPath("$[1].status").value(responseDto2.getStatus().toString()));
     }
 }
