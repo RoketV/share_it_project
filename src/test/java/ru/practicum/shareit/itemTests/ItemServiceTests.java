@@ -20,7 +20,10 @@ import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.comments.Comment;
 import ru.practicum.shareit.comments.CommentRepository;
+import ru.practicum.shareit.comments.dto.CommentInputDto;
+import ru.practicum.shareit.comments.dto.CommentMapper;
 import ru.practicum.shareit.comments.dto.CommentOutputDto;
+import ru.practicum.shareit.exceptions.CommentConsistencyException;
 import ru.practicum.shareit.exceptions.EntityNotFoundException;
 import ru.practicum.shareit.item.ItemPaginationParams;
 import ru.practicum.shareit.item.ItemRepository;
@@ -36,10 +39,7 @@ import ru.practicum.shareit.user.model.User;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -98,7 +98,7 @@ public class ItemServiceTests {
     void searchItem_WhenTextIsBlank_ShouldReturnEmptyList() {
         when(itemRepository.findAll(any(PageRequest.class))).thenReturn(new PageImpl<>(Collections.emptyList()));
 
-        List<ItemOutputDto> result = itemService.searchItem("", new ItemPaginationParams(1,20));
+        List<ItemOutputDto> result = itemService.searchItem("", new ItemPaginationParams(1, 20));
 
         assertEquals(0, result.size());
     }
@@ -329,5 +329,91 @@ public class ItemServiceTests {
         when(itemRepository.findAll(any(Pageable.class))).thenReturn(page);
 
         assertThrows(EntityNotFoundException.class, () -> itemService.searchItem(text, params));
+    }
+
+    @Test
+    void addComment_IfItemNotFound_ShouldThrowException() {
+        Long itemId = 1L;
+        Long userId = 1L;
+        CommentInputDto inputDto = new CommentInputDto();
+        inputDto.setText("test comment");
+
+        when(itemRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+        Assertions.assertThrows(EntityNotFoundException.class,
+                () -> itemService.addComment(inputDto, itemId, userId));
+    }
+
+    @Test
+    void addComment_IfUserNotFound_ShouldThrowException() {
+        Long itemId = 1L;
+        Long userId = 1L;
+        CommentInputDto inputDto = new CommentInputDto();
+        inputDto.setText("test comment");
+
+        Item item = new Item();
+        item.setId(itemId);
+
+        when(itemRepository.findById(anyLong())).thenReturn(Optional.of(item));
+        when(userRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+        Assertions.assertThrows(CommentConsistencyException.class,
+                () -> itemService.addComment(inputDto, itemId, userId));
+    }
+
+    @Test
+    void addCommentShouldThrowExceptionIfNoPastBookingsFound() {
+        Long itemId = 1L;
+        Long userId = 1L;
+        CommentInputDto inputDto = new CommentInputDto();
+        inputDto.setText("test comment");
+
+        Item item = new Item();
+        item.setId(itemId);
+
+        User user = new User();
+        user.setId(userId);
+
+        when(itemRepository.findById(anyLong())).thenReturn(Optional.of(item));
+        when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
+        when(bookingRepository.findPastBookingsByBookerAndItem(anyLong(), anyLong())).thenReturn(new ArrayList<>());
+
+        Assertions.assertThrows(CommentConsistencyException.class,
+                () -> itemService.addComment(inputDto, itemId, userId)
+        );
+    }
+
+    @Test
+    void addComment_ShouldCreateCommentAndReturnDto() {
+        CommentInputDto inputDto = new CommentInputDto();
+        inputDto.setText("This is a test comment");
+
+
+        User user = new User(2L, "creator name", "email@email.com");
+        Item item = new Item(1L, "item name", "item description", true, user);
+
+
+        List<Booking> pastBookings = new ArrayList<>();
+        pastBookings.add(new Booking());
+        Comment comment = CommentMapper.COMMENT_MAPPER.toComment(inputDto);
+        comment.setAuthor(user);
+        comment.setCreated(LocalDateTime.now());
+        comment.setItem(item);
+        comment.setId(1L);
+
+        when(itemRepository.findById(item.getId())).thenReturn(Optional.of(item));
+        when(bookingRepository.findPastBookingsByBookerAndItem(user.getId(), item.getId())).thenReturn(pastBookings);
+        when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+        when(commentRepository.save(any())).thenReturn(comment);
+
+        CommentOutputDto result = itemService.addComment(inputDto, item.getId(), user.getId());
+
+        assertAll(
+                () -> assertNotNull(result),
+                () -> assertNotNull(result.getId()),
+                () -> assertEquals(inputDto.getText(), result.getText()),
+                () -> assertEquals(item.getId(), result.getId()),
+                () -> assertEquals(user.getName(), result.getAuthorName())
+        );
     }
 }
