@@ -19,9 +19,7 @@ import ru.practicum.shareit.booking.dto.BookingRequestDto;
 import ru.practicum.shareit.booking.dto.BookingResponseDto;
 import ru.practicum.shareit.booking.enums.Status;
 import ru.practicum.shareit.booking.model.Booking;
-import ru.practicum.shareit.exceptions.BookingConsistencyException;
-import ru.practicum.shareit.exceptions.EntityNotFoundException;
-import ru.practicum.shareit.exceptions.WrongOwnerException;
+import ru.practicum.shareit.exceptions.*;
 import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.UserRepository;
@@ -82,6 +80,26 @@ public class BookingServiceTests {
         verify(itemRepository).findById(itemId);
         verify(userRepository).findById(userId2);
         verify(bookingRepository).save(any(Booking.class));
+    }
+
+    @Test
+    public void createBooking_withStartAfterFinish_throwsException() {
+        Long userId1 = 1L;
+        Long userId2 = 2L;
+        Long itemId = 2L;
+        User user1 = new User(userId1, "John Doe", "email@email.com");
+        User user2 = new User(userId2, "John Doe", "email@email.com");
+        Item item = new Item(itemId, "Item 1", "description item1", true, user1);
+
+        BookingRequestDto bookingRequestDto = new BookingRequestDto(itemId, LocalDateTime.now().plusHours(1), LocalDateTime.now());
+        when(itemRepository.findById(itemId)).thenReturn(Optional.of(item));
+        when(userRepository.findById(userId2)).thenReturn(Optional.of(user2));
+
+        assertThrows(StartAfterEndException.class,
+                () -> bookingService.createBooking(bookingRequestDto, userId2));
+
+        verify(itemRepository).findById(itemId);
+        verify(userRepository).findById(userId2);
     }
 
     @Test()
@@ -419,6 +437,21 @@ public class BookingServiceTests {
     }
 
     @Test
+    public void getBookingsByBooker_withNonValidState_throwsException() {
+        Long bookerId = 1L;
+        String state = "UNSUPPORTED";
+        BookingPaginationParams params = new BookingPaginationParams(0, 10);
+        User user = new User(bookerId, "John Doe", "email@email.com");
+
+        when(userRepository.findById(bookerId)).thenReturn(Optional.of(user));
+
+        assertThrows(UnsupportedStateException.class,
+                () -> bookingService.getBookingsByBooker(bookerId, state, params));
+
+        verify(userRepository).findById(bookerId);
+    }
+
+    @Test
     public void getBookingsByOwner_withValidParamsAndAllState_returnsExpectedBookings() {
         Long ownerId = 1L;
         String state = "ALL";
@@ -595,5 +628,20 @@ public class BookingServiceTests {
         assertEquals(bookings.get(2).getId(), result.get(2).getId());
         verify(userRepository).findById(bookerId);
         verify(bookingRepository).findByStatusByOwner(Status.REJECTED, bookerId, PageRequest.of(params.getFrom(), params.getSize()));
+    }
+
+    @Test
+    public void getBookingsByOwner_withNonValidState_throwsException() {
+        Long bookerId = 1L;
+        String state = "UNSUPPORTED";
+        BookingPaginationParams params = new BookingPaginationParams(0, 10);
+        User user = new User(bookerId, "John Doe", "email@email.com");
+       
+        when(userRepository.findById(bookerId)).thenReturn(Optional.of(user));
+
+        assertThrows(UnsupportedStateException.class,
+                () -> bookingService.getBookingsByOwner(bookerId, state, params));
+
+        verify(userRepository).findById(bookerId);
     }
 }

@@ -24,6 +24,7 @@ import ru.practicum.shareit.comments.dto.CommentInputDto;
 import ru.practicum.shareit.comments.dto.CommentMapper;
 import ru.practicum.shareit.comments.dto.CommentOutputDto;
 import ru.practicum.shareit.exceptions.CommentConsistencyException;
+import ru.practicum.shareit.exceptions.DifferentUsersException;
 import ru.practicum.shareit.exceptions.EntityNotFoundException;
 import ru.practicum.shareit.item.ItemPaginationParams;
 import ru.practicum.shareit.item.ItemRepository;
@@ -85,6 +86,22 @@ public class ItemServiceTests {
         when(userRepository.findById(any(Long.class))).thenReturn(Optional.empty());
 
         assertThrows(EntityNotFoundException.class, () -> itemService.updateItem(new ItemInputDto(), 1L, 1L));
+    }
+
+    @Test
+    void updateItem_WhenUserIsTheSame_ShouldThrowException() {
+        Long userId = 1L;
+        Long itemId = 2L;
+        ItemInputDto itemInputDto = new ItemInputDto();
+        User user = new User(userId, "user Name", "email@email.com");
+        Item item = new Item();
+        item.setId(itemId);
+        item.setUser(user);
+
+        when(userRepository.findById(any())).thenReturn(Optional.of(new User(2L, "second User", "email@email2.com")));
+        when(itemRepository.findById(any())).thenReturn(Optional.of(item));
+
+        assertThrows(DifferentUsersException.class, () -> itemService.updateItem(itemInputDto, userId, itemId));
     }
 
     @Test
