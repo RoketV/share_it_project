@@ -636,7 +636,7 @@ public class BookingServiceTests {
         String state = "UNSUPPORTED";
         BookingPaginationParams params = new BookingPaginationParams(0, 10);
         User user = new User(bookerId, "John Doe", "email@email.com");
-       
+
         when(userRepository.findById(bookerId)).thenReturn(Optional.of(user));
 
         assertThrows(UnsupportedStateException.class,
