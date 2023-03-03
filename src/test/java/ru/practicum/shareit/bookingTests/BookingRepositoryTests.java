@@ -28,13 +28,13 @@ import static org.junit.jupiter.api.Assertions.*;
 public class BookingRepositoryTests {
 
     @Autowired
-    public BookingRepository bookingRepository;
+    private BookingRepository bookingRepository;
 
     @Autowired
-    public UserRepository userRepository;
+    private UserRepository userRepository;
 
     @Autowired
-    ItemRepository itemRepository;
+    private ItemRepository itemRepository;
 
     @Test
     public void testFindByIdAndItem_User_IdOrUser_Id() {

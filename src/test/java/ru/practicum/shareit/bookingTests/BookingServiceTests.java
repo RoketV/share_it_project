@@ -25,7 +25,6 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.model.User;
 
-import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
@@ -39,7 +38,6 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @ActiveProfiles("test")
-@Transactional
 public class BookingServiceTests {
 
     @MockBean

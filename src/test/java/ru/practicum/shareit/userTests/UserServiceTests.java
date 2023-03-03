@@ -4,30 +4,41 @@ import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import ru.practicum.shareit.exceptions.EntityNotFoundException;
+import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.UserService;
 import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.dto.UserMapper;
+import ru.practicum.shareit.user.model.User;
 
-import javax.transaction.Transactional;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.*;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest
 @AutoConfigureTestDatabase
 @ExtendWith(MockitoExtension.class)
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
-@Transactional
 class UserServiceTests {
 
+    private final UserDto userDto = new UserDto(1L,"name", "email@email.com");
+    @MockBean
+    private UserRepository userRepository;
+
+    @InjectMocks
     private final UserService userService;
-    UserDto userDto = new UserDto("name", "email@email.com");
 
     @Test
     void addUserTest() {
+        User user = UserMapper.USER_MAPPER.toUser(userDto);
+        when(userRepository.save(any())).thenReturn(user);
         UserDto savedUser = userService.addUser(userDto);
         Assertions.assertAll(
                 () -> Assertions.assertNotNull(savedUser),
@@ -44,26 +55,28 @@ class UserServiceTests {
 
     @Test
     public void testUpdateUser() {
-        UserDto addedUserDto = userService.addUser(userDto);
+        User user = UserMapper.USER_MAPPER.toUser(userDto);
+        user.setName("new Name");
+        when(userRepository.findById(any())).thenReturn(Optional.of(user));
+        when(userRepository.save(any())).thenReturn(user);
 
-        userDto.setName("Jane Smith");
-        UserDto updatedUserDto = userService.updateUser(userDto, addedUserDto.getId());
+        UserDto updatedUserDto = userService.updateUser(userDto, user.getId());
 
         Assertions.assertAll(
-                () -> Assertions.assertEquals(addedUserDto.getId(), updatedUserDto.getId()),
-                () -> Assertions.assertEquals(userDto.getName(), updatedUserDto.getName()),
-                () -> Assertions.assertEquals(userDto.getEmail(), updatedUserDto.getEmail())
+                () -> Assertions.assertEquals(user.getId(), updatedUserDto.getId()),
+                () -> Assertions.assertEquals(user.getName(), updatedUserDto.getName()),
+                () -> Assertions.assertEquals(user.getEmail(), updatedUserDto.getEmail())
         );
     }
 
     @Test
     public void testGetUser() {
-        UserDto addedUserDto = userService.addUser(userDto);
-
-        UserDto retrievedUserDto = userService.getUser(addedUserDto.getId());
+        User user = UserMapper.USER_MAPPER.toUser(userDto);
+        when(userRepository.findById(any())).thenReturn(Optional.of(user));
+        UserDto retrievedUserDto = userService.getUser(user.getId());
 
         Assertions.assertAll(
-                () -> Assertions.assertEquals(addedUserDto.getId(), retrievedUserDto.getId()),
+                () -> Assertions.assertEquals(user.getId(), retrievedUserDto.getId()),
                 () -> Assertions.assertEquals(userDto.getName(), retrievedUserDto.getName()),
                 () -> Assertions.assertEquals(userDto.getEmail(), retrievedUserDto.getEmail())
         );
@@ -71,12 +84,12 @@ class UserServiceTests {
 
     @Test
     public void testGetUsers() {
-        userService.addUser(userDto);
+        UserDto userDto2 = new UserDto(2L, "Jane Doe", "jane.doe@example.com");
+        User user1 = UserMapper.USER_MAPPER.toUser(userDto);
+        User user2 = UserMapper.USER_MAPPER.toUser(userDto2);
+        List<User> users = Arrays.asList(user1, user2);
 
-        UserDto userDto2 = new UserDto();
-        userDto2.setName("Jane Doe");
-        userDto2.setEmail("jane.doe@example.com");
-        userService.addUser(userDto2);
+        when(userRepository.findAll()).thenReturn(users);
 
         Set<UserDto> retrievedUserDtos = userService.getUsers();
 
@@ -95,16 +108,15 @@ class UserServiceTests {
 
     @Test
     void testDeleteUser() {
-        UserDto addedUserDto = userService.addUser(userDto);
-
-
-        UserDto deletedUserDto = userService.deleteUser(addedUserDto.getId());
+        User user = UserMapper.USER_MAPPER.toUser(userDto);
+        when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+        UserDto deletedUserDto = userService.deleteUser(user.getId());
 
         Assertions.assertAll(
-                () -> Assertions.assertEquals(addedUserDto.getId(), deletedUserDto.getId()),
+                () -> Assertions.assertEquals(user.getId(), deletedUserDto.getId()),
                 () -> Assertions.assertEquals(userDto.getName(), deletedUserDto.getName()),
                 () -> Assertions.assertEquals(userDto.getEmail(), deletedUserDto.getEmail()),
-                () -> Assertions.assertThrows(EntityNotFoundException.class, () -> userService.getUser(addedUserDto.getId())));
+                () -> Assertions.assertThrows(EntityNotFoundException.class, () -> userService.getUser(user.getId()+1)));
     }
 }
 

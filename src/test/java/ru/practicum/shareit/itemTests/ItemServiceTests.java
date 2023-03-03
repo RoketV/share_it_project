@@ -51,7 +51,6 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @ActiveProfiles("test")
-@Transactional
 public class ItemServiceTests {
 
     @MockBean

@@ -37,7 +37,10 @@ public class BookingControllerTests {
     @Autowired
     private MockMvc mockMvc;
     private ObjectMapper mapper;
-    DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+    private final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+
+    @MockBean
+    private BookingService bookingService;
 
     @BeforeEach
     public void setUp() {
@@ -46,9 +49,6 @@ public class BookingControllerTests {
                 .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
                 .setDateFormat(dateFormat);
     }
-
-    @MockBean
-    private BookingService bookingService;
 
     @Test
     public void createBooking_shouldReturnBookingResponseDto() throws Exception {
