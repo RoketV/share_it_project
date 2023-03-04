@@ -28,7 +28,7 @@ import static org.mockito.Mockito.when;
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 class UserServiceTests {
 
-    private final UserDto userDto = new UserDto(1L,"name", "email@email.com");
+    private final UserDto userDto = new UserDto(1L, "name", "email@email.com");
     @MockBean
     private UserRepository userRepository;
 
@@ -116,7 +116,8 @@ class UserServiceTests {
                 () -> Assertions.assertEquals(user.getId(), deletedUserDto.getId()),
                 () -> Assertions.assertEquals(userDto.getName(), deletedUserDto.getName()),
                 () -> Assertions.assertEquals(userDto.getEmail(), deletedUserDto.getEmail()),
-                () -> Assertions.assertThrows(EntityNotFoundException.class, () -> userService.getUser(user.getId()+1)));
+                () -> Assertions.assertThrows(EntityNotFoundException.class,
+                        () -> userService.getUser(user.getId() + 1)));
     }
 }
 
