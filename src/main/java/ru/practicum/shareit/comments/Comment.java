@@ -32,6 +32,16 @@ public class Comment {
     @Column(name = "created")
     private LocalDateTime created;
 
+    public Comment(String text, User author, Item item, LocalDateTime created) {
+        this.text = text;
+        this.author = author;
+        this.item = item;
+        this.created = created;
+    }
+
+    public Comment() {
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

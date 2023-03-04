@@ -8,7 +8,7 @@ public interface ItemMapper {
 
     ItemMapper ITEM_MAPPER = Mappers.getMapper(ItemMapper.class);
 
-    ItemResponseDto toDto(Item item);
+    ItemOutputDto toDto(Item item);
 
-    Item toItem(ItemRequestDto dto);
+    Item toItem(ItemInputDto dto);
 }

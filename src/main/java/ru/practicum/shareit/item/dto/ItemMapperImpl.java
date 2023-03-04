@@ -6,21 +6,24 @@ import ru.practicum.shareit.item.model.Item;
 @Component
 public class ItemMapperImpl implements ItemMapper {
     @Override
-    public ItemResponseDto toDto(Item item) {
+    public ItemOutputDto toDto(Item item) {
         if (item == null) {
             return null;
         }
-        ItemResponseDto dto = new ItemResponseDto();
+        ItemOutputDto dto = new ItemOutputDto();
         dto.setId(item.getId());
         dto.setDescription(item.getDescription());
         dto.setAvailable(item.getAvailable());
         dto.setName(item.getName());
         dto.setUser(item.getUser());
+        if (item.getRequest() != null) {
+            dto.setRequestId(item.getRequest().getId());
+        }
         return dto;
     }
 
     @Override
-    public Item toItem(ItemRequestDto dto) {
+    public Item toItem(ItemInputDto dto) {
         if (dto == null) {
             return null;
         }

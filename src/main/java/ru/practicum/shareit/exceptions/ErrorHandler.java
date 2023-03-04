@@ -24,12 +24,6 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public Map<String, String> validationHandler(ValidationException e) {
-        return Map.of("error", e.getMessage());
-    }
-
-    @ExceptionHandler
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public Map<String, String> differentUsersForOneItem(DifferentUsersException e) {
         return Map.of("error", e.getMessage());

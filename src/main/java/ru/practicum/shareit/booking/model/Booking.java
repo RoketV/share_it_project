@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.Hibernate;
 import ru.practicum.shareit.booking.enums.Status;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
@@ -43,16 +42,38 @@ public class Booking {
     @Enumerated(EnumType.STRING)
     private Status status;
 
+    public Booking(Long id, LocalDateTime start, LocalDateTime end, Status status) {
+        this.id = id;
+        this.start = start;
+        this.end = end;
+        this.status = status;
+    }
+
+    public Booking(Long id, LocalDateTime start, LocalDateTime end, Item item, User user, Status status) {
+        this.id = id;
+        this.start = start;
+        this.end = end;
+        this.item = item;
+        this.user = user;
+        this.status = status;
+    }
+
+    public Booking(Long id, Item item, User user) {
+        this.id = id;
+        this.item = item;
+        this.user = user;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        if (!(o instanceof Booking)) return false;
         Booking booking = (Booking) o;
-        return id != null && Objects.equals(id, booking.id);
+        return Objects.equals(getId(), booking.getId()) && Objects.equals(getStart(), booking.getStart()) && Objects.equals(getEnd(), booking.getEnd()) && Objects.equals(getItem(), booking.getItem()) && Objects.equals(getUser(), booking.getUser()) && getStatus() == booking.getStatus();
     }
 
     @Override
     public int hashCode() {
-        return getClass().hashCode();
+        return Objects.hash(getId(), getStart(), getEnd(), getItem(), getUser(), getStatus());
     }
 }

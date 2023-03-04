@@ -8,7 +8,7 @@ public class CommentMapperImpl implements CommentMapper {
 
 
     @Override
-    public Comment toComment(CommentRequestDto dto) {
+    public Comment toComment(CommentInputDto dto) {
         if (dto == null) {
             return null;
         }
@@ -18,11 +18,11 @@ public class CommentMapperImpl implements CommentMapper {
     }
 
     @Override
-    public CommentResponseDto toDto(Comment comment) {
+    public CommentOutputDto toDto(Comment comment) {
         if (comment == null) {
             return null;
         }
-        CommentResponseDto dto = new CommentResponseDto();
+        CommentOutputDto dto = new CommentOutputDto();
         dto.setId(comment.getId());
         dto.setAuthorName(comment.getAuthor().getName());
         dto.setText(comment.getText());

@@ -7,8 +7,8 @@ public interface CommentMapper {
 
     CommentMapper COMMENT_MAPPER = Mappers.getMapper(CommentMapper.class);
 
-    Comment toComment(CommentRequestDto dto);
+    Comment toComment(CommentInputDto dto);
 
-    CommentResponseDto toDto(Comment comment);
+    CommentOutputDto toDto(Comment comment);
 
 }

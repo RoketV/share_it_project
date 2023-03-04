@@ -10,7 +10,7 @@ import javax.validation.constraints.NotNull;
  * TODO Sprint add-controllers.
  */
 @Data
-public class ItemRequestDto {
+public class ItemInputDto {
 
     private Long id;
     @NotBlank
@@ -20,4 +20,5 @@ public class ItemRequestDto {
     @NotNull
     private Boolean available;
     private User user;
+    private Long requestId;
 }
